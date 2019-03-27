@@ -1,1 +1,12 @@
+server:
+  address: 80
 
+spring:
+  #thymeleaf模板引擎
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    check-template-location: true
+    encoding: UTF-8
+    mode: HTML5
+    cache: false
