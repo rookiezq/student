@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.rookied.student.mapper.ScoreMapper">
+
+    <!-- 查询所有 -->
+    <select id="findAll" resultType="com.rookied.student.bean.Score">
+        SELECT * FROM score
+    </select>
+
+    <!-- 根据ID查询 -->
+    <select id="findById" resultType="com.rookied.student.bean.Score" parameterType="int">
+        SELECT * FROM tb_user WHERE id = #{id}
+    </select>
+
+    <!-- 创建 -->
+    <insert id="create" parameterType="com.rookied.student.bean.Score">
+        INSERT INTO tb_user(username, password) VALUES (#{username}, #{password})
+    </insert>
+
+    <!-- 删除 -->
+    <delete id="delete" parameterType="int">
+        DELETE FROM tb_user WHERE id = #{id}
+    </delete>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="com.rookied.student.bean.Score">
+        UPDATE tb_user SET WHERE 1=1
+        <if test="username != null">
+            username = #{username},
+        </if>
+        <if test="password != null">
+            password = #{password}
+        </if>
+        WHERE id = #{id}
+    </update>
+
+    <!-- 根据用户名查询 -->
+    <select id="findByName" parameterType="String" resultType="com.rookied.student.bean.Score">
+        SELECT * FROM tb_user WHERE username = #{username}
+    </select>
+</mapper>

@@ -14,6 +14,11 @@ public class LayuiController {
 
     @RequestMapping("/index")
     public String demo(){
-        return "layui/index";
+        return "index";
+    }
+
+    @RequestMapping("/score")
+    public String score(){
+        return "score";
     }
 }
