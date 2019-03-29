@@ -10,22 +10,22 @@
 
     <!-- 根据ID查询 -->
     <select id="findById" resultType="com.rookied.student.bean.Course" parameterType="Long">
-        SELECT * FROM tb_user WHERE id = #{id}
+        SELECT * FROM course WHERE id = #{id}
     </select>
 
     <!-- 创建 -->
     <insert id="create" parameterType="com.rookied.student.bean.Course">
-        INSERT INTO tb_user(username, password) VALUES (#{username}, #{password})
+        INSERT INTO course(cid, cname, cterm, cmaj) VALUES (#{cId}, #{cName}, #{cTerm}, #{cMaj})
     </insert>
 
     <!-- 删除 -->
     <delete id="delete" parameterType="int">
-        DELETE FROM tb_user WHERE id = #{id}
+        DELETE FROM course WHERE id = #{id}
     </delete>
 
     <!-- 更新 -->
     <update id="update" parameterType="com.rookied.student.bean.Course">
-        UPDATE tb_user SET WHERE 1=1
+        UPDATE course SET WHERE 1=1
         <if test="username != null">
             username = #{username},
         </if>
@@ -37,6 +37,6 @@
 
     <!-- 根据用户名查询 -->
     <select id="findByName" parameterType="String" resultType="com.rookied.student.bean.Course">
-        SELECT * FROM tb_user WHERE username = #{username}
+        SELECT * FROM course WHERE username = #{username}
     </select>
 </mapper>

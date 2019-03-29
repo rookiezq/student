@@ -30,9 +30,9 @@ public interface ScoreMapper {
     /**
      * 创建一个成绩信息
      *
-     * @param student 成绩
+     * @param score 成绩
      */
-    void create(Score student);
+    void create(Score score);
 
     /**
      * 删除一个成绩信息

@@ -28,4 +28,9 @@ public class Course implements Serializable {
      * 课程学期
      */
     private int cTerm;
+    /**
+     * 课程所属专业
+     */
+    private String cMaj;
+
 }
