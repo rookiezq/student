@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @version: 1.0 2019-03-27 15:41
  **/
 @Controller
-@RequestMapping("/layui")
+@RequestMapping("")
 public class LayuiController {
 
     @RequestMapping("/index")

@@ -39,4 +39,47 @@
     <select id="findByName" parameterType="String" resultType="com.rookied.student.bean.Student">
         SELECT * FROM student WHERE username = #{username}
     </select>
+
+    <resultMap id="scoreResult" type="com.rookied.student.bean.Student">
+        <id property="stuId" column="stu_id"/>
+        <result property="stuSex" column="stu_sex"/>
+        <result property="stuMaj" column="stu_maj"/>
+        <collection property="pageBeans" ofType="com.rookied.student.bean.PageBean">
+            <id property="sid" column="sid"/>
+            <result property="stuId" column="stu_id"/>
+            <result property="stuSex" column="stu_sex"/>
+            <result property="cname" column="cname"/>
+            <result property="score" column="score"/>
+            <result property="cterm" column="cterm"/>
+            <result property="stuMaj" column="stu_maj"/>
+        </collection>
+    </resultMap>
+
+    <!-- 查询所有 -->
+    <select id="findAllScore" resultMap="scoreResult">
+        SELECT
+        a.stu_id,
+        a.stu_sex,
+        c.cname,
+        b.score,
+        c.cterm,
+        a.stu_maj,
+        b.sid
+        FROM student a,course c,score b
+        WHERE a.stu_id = b.stu_id
+        AND b.cid = c.cid
+        AND a.stu_maj=c.cmaj
+        <if test="stuId != '' and stuId != null">
+            AND a.stu_id = #{stuId}
+        </if>
+        <if test="cterm != 0 and cterm != null">
+            AND c.cterm = #{cterm}
+        </if>
+        <if test="stuMaj != '' and stuMaj != null">
+            AND a.stu_maj = #{stuMaj}
+        </if>
+
+    </select>
+
+
 </mapper>

@@ -1,7 +1,9 @@
 package com.rookied.student.mapper;
 
 import com.rookied.student.bean.Student;
+import lombok.NonNull;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 
@@ -49,5 +51,15 @@ public interface StudentMapper {
      * @param user 学生类
      */
     void update(Student user);
+
+    /**
+     * 通过学号查找所有成绩
+     * @param stuId 学号
+     * @param cterm 学期
+     * @param stuMaj 专业
+     * @return 成绩列表
+     */
+    List<Student> findAllScore(@Param(value = "stuId") String stuId , @Param(value = "cterm") int cterm,
+                               @Param(value = "stuMaj")String stuMaj);
 
 }

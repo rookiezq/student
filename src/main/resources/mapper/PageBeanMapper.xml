@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 
-<mapper namespace="com.rookied.student.mapper.ScoreMapper">
+<mapper namespace="com.rookied.student.mapper.PageBeanMapper">
 
     <!-- 查询所有 -->
-    <select id="findAll" resultType="com.rookied.student.bean.Score">
+    <select id="findAll" resultType="com.rookied.student.bean.PageBean">
         SELECT
             a.stu_id,
             a.stu_sex,
@@ -16,15 +16,16 @@
         WHERE a.stu_id = b.stu_id
         AND b.cid = c.cid
         AND a.stu_maj=c.cmaj
+        AND a.stu_id = #{stuId}
     </select>
 
     <!-- 根据ID查询 -->
-    <select id="findById" resultType="com.rookied.student.bean.Score" parameterType="int">
+    <select id="findById" resultType="com.rookied.student.bean.PageBean" parameterType="int">
         SELECT * FROM score WHERE id = #{id}
     </select>
 
     <!-- 创建 -->
-    <insert id="create" parameterType="com.rookied.student.bean.Score">
+    <insert id="create" parameterType="com.rookied.student.bean.PageBean">
         INSERT INTO score(cid, stu_id, score) VALUES (#{cId}, #{stuId}, #{score})
     </insert>
 
@@ -34,7 +35,7 @@
     </delete>
 
     <!-- 更新 -->
-    <update id="update" parameterType="com.rookied.student.bean.Score">
+    <update id="update" parameterType="com.rookied.student.bean.PageBean">
         UPDATE score SET WHERE 1=1
         <if test="username != null">
             username = #{username},
@@ -46,7 +47,7 @@
     </update>
 
     <!-- 根据用户名查询 -->
-    <select id="findByName" parameterType="String" resultType="com.rookied.student.bean.Score">
+    <select id="findByName" parameterType="String" resultType="com.rookied.student.bean.PageBean">
         SELECT * FROM score WHERE username = #{username}
     </select>
 </mapper>

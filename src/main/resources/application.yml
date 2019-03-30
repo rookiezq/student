@@ -42,3 +42,11 @@ mybatis:
   #自动将以下画线方式命名的数据库列映射到Java对象的驼峰式命名属性中.默认为false
   configuration:
     map-underscore-to-camel-case: true
+  #开启二级缓存
+    cache-enabled: true
+
+#mybaatis分页插件pagehelper设置
+pagehelper:
+  reasonable: true
+  support-methods-arguments: true
+  helper-dialect: mysql

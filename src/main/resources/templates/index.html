@@ -11,8 +11,8 @@
         <div class="layui-logo" style="font-size: 20px; color: white;">就业预测系统</div>
         <!-- 头部区域（可配合layui已有的水平导航） -->
         <ul class="layui-nav  layui-layout-left">
-            <li class="layui-nav-item"><a href="">控制台</a></li>
-            <li class="layui-nav-item"><a href="">商品管理</a></li>
+            <li class="layui-nav-item"><a href="/index">控制台</a></li>
+            <li class="layui-nav-item"><a href="/course">商品管理</a></li>
             <li class="layui-nav-item"><a href="">用户</a></li>
             <li class="layui-nav-item"><a href="javascript:;">其它系统</a>
                 <dl class="layui-nav-child">
@@ -55,21 +55,36 @@
         <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
         <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
     </script>
-    <script>
-        layui.use('table', function () {
+<!--    <script type="text/javascript">
+        layui.use('table', function() {
             var table = layui.table;
 
+            layui.jquery.getJSON('header.json', function(header){
+                table.render({
+                    id: 'idTest',
+                    elem: '#test',
+                    height: 315,
+                    url: '../../demo.json', //数据接口
+                    page: true,
+                    cols: header
+                });
+            })
+        });
+    </script>-->
+    <!--<script>
+        layui.use('table', function () {
+            var table = layui.table;
             //第一个实例
             table.render({
                 elem: '#test'
                 , height: 600
-                , url: '../../demo.json' //数据接口
+                , url: '/course' //数据接口
                 , page: true //开启分页
                 , toolbar: '#toolbarDemo'
                 , title: '用户数据表'
                 , totalRow: true
                 , cols: [
-                    [ //表头
+                    [ /*//表头
                         {type: 'checkbox', fixed: 'left'}
                         , {field: 'id', title: 'ID', width: 80, sort: true, fixed: 'left',unresize: true,totalRowText: '合计'}
                         , {field: 'username', title: '用户名', width: 80}
@@ -80,8 +95,26 @@
                         , {field: 'score', title: '评分', width: 80, sort: true}
                         , {field: 'classify', title: '职业', width: 80}
                         , {field: 'wealth', title: '财富', width: 135, sort: true}
-                        , {fixed: 'right', title: '操作', toolbar: '#barDemo', width: 150}
+                        , {fixed: 'right', title: '操作', toolbar: '#barDemo', width: 150}*/
                     ]]
+                , done: function(res, curr, count){
+                    //如果是异步请求数据方式，res即为你接口返回的信息。
+                    //如果是直接赋值的方式，res即为：{data: [], count: 99} data为当前页数据、count为数据总长度
+                    var strs= new Array();
+                    var tit=res.nem;
+                    strs=tit.split(",");
+                    for (var i=0;i<strs.length;i++)
+                    {
+                        console.log(strs[i]);
+                    }
+
+
+                    //得到当前页码
+                    console.log(curr);
+
+                    //得到数据总量
+                    console.log(count);
+                }
             });
             //工具栏事件
             table.on('toolbar(test)', function (obj) {
@@ -104,6 +137,42 @@
 
         });
     </script>
+-->
+<script>
+    layui.use('table', function () {
+        var table = layui.table;
+        table.render({
+            elem: '#test'
+            , url: '/course'
+            , cols: [
+                []]
+            //回调函数 res返回的data curr当前页码 count数据总量
+            , done: function (res, curr, count) {
+                var mycars = new Array();
+                console.log(res);
+
+                var tit = res.v;
+               // alert(tit);
+                var obj2 = eval(res);
+                console.log(res.data[0].cId);
+                //alert(obj2.data[0].cterm);
+                var strs = new Array();
+                //strs = tit.split(",");
+                for(var i = 0; i < res.data; i++){
+                    console.log(res.data[i].cid);
+                }
+                /*for (var i = 0; i < strs.length; i++) {
+                    mycars[i] = {field: 'ex' + i, title: strs[i], align: 'center', width: '120'};
+                }*/
+                table.init('test', {
+                    cols: [mycars]
+                    , data: res.data
+                    , limit: 1000
+                });
+            }
+        })
+    });
+</script>
 </div>
 
 <script>
