@@ -34,10 +34,23 @@ public class Student implements Serializable {
      * 学生成绩
      */
     private List<PageBean> pageBeans;
+    /**
+     * 学生成绩
+     */
+    private List<Score> scores;
 
     public Student(String stuId, String stuSex, String stuMaj) {
         this.stuId = stuId;
         this.stuSex = stuSex;
         this.stuMaj = stuMaj;
+    }
+
+    @Override
+    public String toString() {
+        return "Student{" +
+                "stuId='" + stuId + '\'' +
+                ", stuSex='" + stuSex + '\'' +
+                ", stuMaj='" + stuMaj + '\'' +
+                '}';
     }
 }

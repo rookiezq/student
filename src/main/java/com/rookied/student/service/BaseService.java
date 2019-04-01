@@ -44,4 +44,17 @@ public interface BaseService<T> {
      * @param t
      */
     void update(T t);
+
+    /**
+     * 将list放进redis
+     * @param list 获取的list
+     */
+    void pushInRedis(String key,List<T> list);
+
+    /**
+     * 从redis中获取list
+     * @param key 存放的key值
+     * @return 获取的list
+     */
+    List<T> rangeFromRedis(String key);
 }

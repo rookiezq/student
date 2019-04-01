@@ -33,7 +33,9 @@ public class IOUtils {
         List<Score> scoreList = (List<Score>) map.get("scoreList");
         //创建一个存放当前文件中课程的id
         List<Integer> cidList = new ArrayList<>();
-
+        //获取学期
+        int term = (int) map.get("term");
+        //创建一个存放课程以及对应成绩
         //从表格第二行开始
         for (int i = sheet.getFirstRowNum() + 2; i < sheet.getPhysicalNumberOfRows(); i++) {
             //获得单元表的当前行对象
@@ -54,7 +56,7 @@ public class IOUtils {
                     cidList.add(cid);
                     map.put("cid",cid);
                     String major = (String) map.get("major");
-                    int term = (int) map.get("term");
+
                     //封装Course
                     Course course = new Course(cid, cell, term, major);
                     courseList.add(course);

@@ -3,7 +3,9 @@ package com.rookied.student.service.impl;
 import com.rookied.student.bean.Course;
 import com.rookied.student.mapper.CourseMapper;
 import com.rookied.student.service.CourseService;
+import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -42,15 +44,15 @@ public class CourseServiceImpl implements CourseService {
         int term = 1;
         for (Course course : list) {
             //当学期变化时 把list放入map
-            if ("计算机科学与技术".equalsIgnoreCase(course.getCMaj())) {
-                if (course.getCTerm() != term) {
+            if ("计算机科学与技术".equalsIgnoreCase(course.getCmaj())) {
+                if (course.getCterm() != term) {
                     map.put("计科" + term, courseList);
                     // 重新new 不能用 courseList.clear() map放入的是list的引用
                     courseList = new ArrayList<>();
                     term++;
                 }
                 //将每学期的课程名加入list
-                courseList.add(course.getCName());
+                courseList.add(course.getCname());
             }
             //!!!!!!!这句没加找了好久的错误
             if (term == 6) {
@@ -59,15 +61,15 @@ public class CourseServiceImpl implements CourseService {
         }
         term = 1;
         for (Course course : list) {
-            if ("会计".equalsIgnoreCase(course.getCMaj())) {
-                if (course.getCTerm() != term) {
+            if ("会计".equalsIgnoreCase(course.getCmaj())) {
+                if (course.getCterm() != term) {
                     map.put("会计" + term, courseList);
                     // 重新new 不能用 courseList.clear() map放入的是list的引用
                     courseList = new ArrayList<>();
                     term++;
                 }
                 //将每学期的课程名加入list
-                courseList.add(course.getCName());
+                courseList.add(course.getCname());
             }
             if (term == 6) {
                 map.put("会计" + term, courseList);
@@ -95,9 +97,24 @@ public class CourseServiceImpl implements CourseService {
 
         //默认
         String key = cmaj+cterm;
+        Cursor<Map.Entry<Object, Object>> curosr = redisTemplate.opsForHash().scan("courseMap", ScanOptions.NONE);
+        Map<String,List<String>> map = new HashMap<>();
+        while(curosr.hasNext()){
+            Map.Entry<Object, Object> entry = curosr.next();
+            map.put((String)entry.getKey(),(List<String>)entry.getValue());
+        }
+        return map.get(key);
+    }
 
+    /**
+     * 查找课程对应成绩
+     *
+     * @return 课程对应成绩集的map
+     */
+    @Override
+    public Map<String, List<String>> findCourseAndScore() {
 
-        return (List<String>) redisTemplate.opsForValue().get(key);
+        return null;
     }
 
     /**
@@ -149,5 +166,26 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public void update(Course course) {
 
+    }
+
+    /**
+     * 将list放进redis
+     *
+     * @param list 获取的list
+     */
+    @Override
+    public void pushInRedis(String key,List<Course> list) {
+
+    }
+
+    /**
+     * 从redis中获取list
+     *
+     * @param key 存放的key值
+     * @return 获取的list
+     */
+    @Override
+    public List<Course> rangeFromRedis(String key) {
+        return null;
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,19 +24,30 @@ public class CourseController {
 
     /**
      * 获取一个某个专业某一学期的课程
+     * 默认获取计科 第一学期
      * @return
      */
-    @RequestMapping(value = "/course")
+    @PostMapping(value = "/course")
     public String course(@RequestParam(value ="cmaj",required = false,defaultValue = "计科")String cMaj,
                          @RequestParam(value ="cterm",required = false,defaultValue = "1")int cterm){
+        Map<String,String> map;
         List<String> courses = courseService.findCourseByRedis(cMaj, cterm);
-        Map<String,List<String>> map = new HashMap<>();
-        map.put(cMaj,courses);
+        List<Map<String,String>> list = new ArrayList<>();
+        String key = "coure";
+        int index = 0;
+        for (String cours : courses) {
+            map = new HashMap<>();
+            map.put(key+index,courses.get(index));
+            list.add(map);
+            index++;
+        }
+
+       // map.put(cMaj+cterm,courses);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("code", 0);
         jsonObject.put("msg", "");
-        jsonObject.put("count", courses.size());
-        jsonObject.put("data", map);
+        jsonObject.put("count", list.size());
+        jsonObject.put("data", list);
         return jsonObject.toJSONString();
     }
 }

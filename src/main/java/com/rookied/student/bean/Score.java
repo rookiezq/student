@@ -22,7 +22,7 @@ public class Score implements Serializable {
     /**
      * 课程id
      */
-    private int cId;
+    private int cid;
     /**
      * 学生学号
      */
@@ -32,8 +32,8 @@ public class Score implements Serializable {
      */
     private String score;
 
-    public Score(int cId, String stuId, String score) {
-        this.cId = cId;
+    public Score(int cid, String stuId, String score) {
+        this.cid = cid;
         this.stuId = stuId;
         this.score = score;
     }

@@ -1,12 +1,210 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="utf-8">
-    <title>table模块快速使用</title>
-    <link th:href="@{/layui/css/layui.css}" rel="stylesheet" media="all"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>layout 后台大布局 - Layui</title>
+    <link th:href="@{/layui/css/layui.css}" rel="stylesheet"/>
 </head>
-<body>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <div class="layui-logo">layui 后台布局</div>
+        <!-- 头部区域（可配合layui已有的水平导航） -->
+        <ul class="layui-nav layui-layout-left">
+            <li class="layui-nav-item"><a href="">控制台</a></li>
+            <li class="layui-nav-item"><a href="">商品管理</a></li>
+            <li class="layui-nav-item"><a href="">用户</a></li>
+            <li class="layui-nav-item">
+                <a href="javascript:">其它系统</a>
+                <dl class="layui-nav-child">
+                    <dd><a href="">邮件管理</a></dd>
+                    <dd><a href="">消息管理</a></dd>
+                    <dd><a href="">授权管理</a></dd>
+                </dl>
+            </li>
+        </ul>
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item">
+                <a href="javascript:">
+                    贤心
+                </a>
+                <dl class="layui-nav-child">
+                    <dd><a href="">基本资料</a></dd>
+                    <dd><a href="">安全设置</a></dd>
+                </dl>
+            </li>
+            <li class="layui-nav-item"><a href="">退了</a></li>
+        </ul>
+    </div>
+    <table class="layui-hide" id="test"></table>
+    <script th:src="@{/layui/layui.all.js}"></script>
+    <!--<script th:inline="javascript">
+        layui.use('table', function(){
+            var table = layui.table;
+            table.render({
+                elem: '#test'
+                ,url:'../../demo3.json'
+                ,toolbar: true
+                ,title: '用户数据表'
+                ,totalRow: true
+                ,cols: [
+                    [
+                        {field:'id', title:'ID', width:80, fixed: 'left', unresize: true, sort: true, totalRowText: '合计行'}
+                        ,{field:'username', title:'用户名', width:120, edit: 'text'}
+                        ,{field:'email', title:'邮箱', width:150, edit: 'text'}
+                        ,{field:'experience', title:'积分', width:80, sort: true, totalRow: true}
+                        ,{field:'sex', title:'性别', width:80, edit: 'text', sort: true}
+                        ,{field:'logins', title:'登入次数', width:100, sort: true, totalRow: true}
+                        ,{field:'sign', title:'签名'}
+                        ,{field:'city', title:'城市', width:100}
+                        ,{field:'ip', title:'IP', width:120}
+                        ,{field:'joinTime', title:'加入时间', width:120}
+                    ]]
+                ,page: true
+                ,response: {
+                    statusCode: 200 //重新规定成功的状态码为 200，table 组件默认为 0
+                }
+                ,parseData: function(res){ //将原始数据解析成 table 组件所规定的数据
+                    return {
+                        "code": res.status, //解析接口状态
+                        "msg": res.message, //解析提示文本
+                        "count": res.total, //解析数据长度
+                        "data": res.rows.item //解析数据列表
+                    };
+                }
+            });
+        });
+    </script>-->
+    <script th:inline="javascript">
+        layui.use('table', function () {
+            var table = layui.table;
+            var datas = [];
+            var tableHeaders = [];
+            //第一个实例
+            table.render({
+                elem: '#test'
+                , url: '/s' //数据接口
+                ,method: 'post'
+                //, totalRow: true
+                , cols: [
+                    [
+                    {field:   'stuid', title: "学号", sort: true, align: "center", width: "120"}
+                    , {field: 'course1', title: "高等数学Ⅰ（1）", align: "center", width: "120", sort: true}
+                    , {field: 'course2', title: "体育（1）", align: "center", width: "120", sort: true}
+                    , {field: 'course3', title: "思想道德修养与法律基础", align: "center", width: "120", sort: true}
+                    , {field: 'course4', title: "程序设计基础", align: "center", width: "120", sort: true}
+                    , {field: 'course5', title: "认知实习", align: "center", width: "120", sort: true}
+                    , {field: 'course6', title: "思想道德修养与法律基础实践", align: "center", width: "120", sort: true}
+                    , {field: 'course7', title: "计算机科学与技术专业导论", align: "center", width: "120", sort: true}
+                    , {field: 'course8', title: "职业生涯规划与创新教育", align: "center", width: "120", sort: true}
+                    , {field: 'course9', title: "大学英语（1）", align: "center", width: "120", sort: true}
+                    , {field: "course10", title: "军训", align: "center", width: "120", sort: true}
+                    , {field: "course11", title: "大学语文", align: "center", width: "120", sort: true}
+                    , {field: "course12", title: "大学物理实验Ⅱ", align: "center", width: "120", sort: true}
+                        ]
+                ]
+                /*, page: { //支持传入 laypage 组件的所有参数（某些参数除外，如：jump/elem） - 详见文档
+                    layout: ['limit', 'count', 'prev', 'page', 'next', 'skip'] //自定义分页布局
+                    //,curr: 5 //设定初始在第 5 页
+                    , groups: 1 //只显示 1 个连续页码
+                    , first: false //不显示首页
+                    , last: false //不显示尾页
+
+                }*/
+                , page: true
+                //, limit: 10
+                , response: {
+                    statusName: 'code' //规定数据状态的字段名称，默认：code
+                    , statusCode: 0 //规定成功的状态码，默认：0
+                    , msgName: 'message' //规定状态信息的字段名称，默认：msg
+                    , countName: 'count' //规定数据总数的字段名称，默认：count
+                    , dataName: 'data' //规定数据列表的字段名称，默认：data
+                }
+                , parseData: function (res) { //res 即为原始返回的数据
+                    /*var courses = res.data.courses;
+                    //tableHeaders[0] = {type: 'checkbox', fixed: 'left'};
+                    tableHeaders[0] = {
+                        field: 'stuid', title: '学号',sort: true,
+                        align: 'center', width: '120'
+                    };
+                    for (var i = 1; i < courses.length + 1; i++) {
+                        //console.log(courses[i - 2]);
+                        tableHeaders[i] = {
+                            field: 'course' + i,
+                            title: courses[i - 1],
+                            align: 'center',
+                            width: '120',
+                            sort: true,
+                        };
+                    }
+                    datas = res.data.stuList;*/
+                    //console.log(datas);
+                    return {
+                        "code": res.code, //解析接口状态
+                        "message": res.message, //解析提示文本
+                        "count": res.count, //解析数据长度
+                        "data": res.data.stuList //解析数据列表
+                    };
+                }
+                , done: function (res, curr, count) {
+                    //console.log(res+"--"+curr+"---"+count);
+                    //curr = 2;
+                    //count = 10;
+                    /*console.log(datas);
+                    console.log(tableHeaders);
+
+                    table.init('test', {
+
+                        cols: [tableHeaders]
+                        , data: datas
+                        , limit: 10
+                    });*/
+                }
+            });
+        });
+    </script>
+
+    <!--    <div class="layui-side layui-bg-black">
+            <div class="layui-side-scroll">
+                &lt;!&ndash; 左侧导航区域（可配合layui已有的垂直导航） &ndash;&gt;
+                <ul class="layui-nav layui-nav-tree" lay-filter="test">
+                    <li class="layui-nav-item layui-nav-itemed">
+                        <a class="" href="javascript:">所有商品</a>
+                        <dl class="layui-nav-child">
+                            <dd><a href="javascript:">列表一</a></dd>
+                            <dd><a href="javascript:">列表二</a></dd>
+                            <dd><a href="javascript:">列表三</a></dd>
+                            <dd><a href="">超链接</a></dd>
+                        </dl>
+                    </li>
+                    <li class="layui-nav-item">
+                        <a href="javascript:">解决方案</a>
+                        <dl class="layui-nav-child">
+                            <dd><a href="javascript:">列表一</a></dd>
+                            <dd><a href="javascript:">列表二</a></dd>
+                            <dd><a href="">超链接</a></dd>
+                        </dl>
+                    </li>
+                    <li class="layui-nav-item"><a href="">云市场</a></li>
+                    <li class="layui-nav-item"><a href="">发布商品</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="layui-body">
+            &lt;!&ndash; 内容主体区域 &ndash;&gt;
+            <div style="padding: 15px;">
+            </div>
+        </div>-->
 
 
+</div>
+<!--<script>
+    //JavaScript代码区域
+    layui.use('element', function () {
+        var element = layui.element;
+
+    });
+</script>-->
 </body>
 </html>

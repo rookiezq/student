@@ -44,7 +44,13 @@
         <id property="stuId" column="stu_id"/>
         <result property="stuSex" column="stu_sex"/>
         <result property="stuMaj" column="stu_maj"/>
-        <collection property="pageBeans" ofType="com.rookied.student.bean.PageBean">
+        <collection property="scores" ofType="com.rookied.student.bean.Score">
+            <id property="sid" column="sid"/>
+            <result property="stuId" column="stu_id"/>
+            <result property="score" column="score"/>
+            <result property="cid" column="cid"/>
+        </collection>
+        <!--<collection property="pageBeans" ofType="com.rookied.student.bean.PageBean">
             <id property="sid" column="sid"/>
             <result property="stuId" column="stu_id"/>
             <result property="stuSex" column="stu_sex"/>
@@ -52,7 +58,7 @@
             <result property="score" column="score"/>
             <result property="cterm" column="cterm"/>
             <result property="stuMaj" column="stu_maj"/>
-        </collection>
+        </collection>-->
     </resultMap>
 
     <!-- 查询所有 -->
@@ -64,7 +70,8 @@
         b.score,
         c.cterm,
         a.stu_maj,
-        b.sid
+        b.sid,
+        b.cid
         FROM student a,course c,score b
         WHERE a.stu_id = b.stu_id
         AND b.cid = c.cid

@@ -2,10 +2,35 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 
 <mapper namespace="com.rookied.student.mapper.CourseMapper">
+    <resultMap id="scoreResult" type="com.rookied.student.bean.Course">
+        <id property="cid" column="cid"/>
+        <result property="cterm" column="cterm"/>
+        <result property="cname" column="cname"/>
+        <result property="cmaj" column="cmaj"/>
+        <collection property="cscores" ofType="com.rookied.student.bean.Score">
+            <id property="sid" column="sid"/>
+            <result property="stuId" column="stu_id"/>
+            <result property="cid" column="cid"/>
+            <result property="score" column="score"/>
+        </collection>
+    </resultMap>
 
     <!-- 查询所有 -->
     <select id="findAll" resultType="com.rookied.student.bean.Course">
         SELECT * FROM course
+    </select>
+
+    <select id="findCourseAndScore" resultMap="scoreResult">
+        SELECT
+            c.cid,
+            c.cname,
+            c.cmaj,
+            c.cterm,
+            s.sid,
+            s.stu_id,
+            s.score
+        FROM course c,score s
+        WHERE c.cid = s.cid
     </select>
 
     <!-- 根据ID查询 -->

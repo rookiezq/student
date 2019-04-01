@@ -4,6 +4,7 @@ import com.rookied.student.bean.Student;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @desciption: 学生Service
@@ -14,10 +15,12 @@ public interface StudentService extends BaseService<Student> {
     /**
      * 通过学号查找所有成绩
      *
+     * @param page  当前页码
+     * @param limit  每页个数
      * @param stuId  学号
      * @param cterm  学期
      * @param stuMaj 专业
      * @return 成绩列表
      */
-    List<Student> findAllScore(String stuId, int cterm, String stuMaj);
+    List<Map<String, String>> findAllScore(Integer page,Integer limit,String stuId, int cterm, String stuMaj);
 }

@@ -20,6 +20,12 @@ public interface CourseMapper {
     List<Course> findAll();
 
     /**
+     *
+     * @return
+     */
+    List<Course> findCourseAndScore();
+
+    /**
      * 通过学号查找
      *
      * @param id 学号

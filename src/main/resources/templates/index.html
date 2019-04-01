@@ -4,6 +4,8 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>就业预测系统</title>
     <link th:href="@{/layui/css/layui.css}" rel="stylesheet" />
+    <script th:src="@{/layui/layui.all.js}" charset="utf-8"></script>
+    <script th:src="@{/js/jquery.js}" charset="utf-8"></script>
 </head>
 <body class="layui-layout-body">
 <div class="layui-layout layui-layout-admin">
@@ -14,7 +16,7 @@
             <li class="layui-nav-item"><a href="/index">控制台</a></li>
             <li class="layui-nav-item"><a href="/course">商品管理</a></li>
             <li class="layui-nav-item"><a href="">用户</a></li>
-            <li class="layui-nav-item"><a href="javascript:;">其它系统</a>
+            <li class="layui-nav-item"><a href="javascript:">其它系统</a>
                 <dl class="layui-nav-child">
                     <dd>
                         <a href="">邮件管理</a>
@@ -28,7 +30,7 @@
                 </dl></li>
         </ul>
         <ul class="layui-nav layui-layout-right">
-            <li class="layui-nav-item"><a href="javascript:;"> aaa 贤心 </a>
+            <li class="layui-nav-item"><a href="javascript:"> aaa 贤心 </a>
                 <dl class="layui-nav-child">
                     <dd>
                         <a href="">基本资料</a>
@@ -40,139 +42,154 @@
             <li class="layui-nav-item"><a href="">退了</a></li>
         </ul>
     </div>
-
-    <script th:src="@{/layui/layui.js}"></script>
-    <!-- 表格内容 -->
-    <table class="layui-hide" id="test" lay-filter="test"></table>
+    <!--    <div class="demoTable">
+            搜索ID：
+            <div class="layui-inline">
+                <input class="layui-input" name="id" id="demoReload" autocomplete="off">
+            </div>
+            <button class="layui-btn" data-type="reload">搜索</button>
+        </div>-->
     <script type="text/html" id="toolbarDemo">
-        <div class="layui-btn-container">
-            <button class="layui-btn layui-btn-sm" lay-event="getCheckData">获取选中行数据</button>
-            <button class="layui-btn layui-btn-sm" lay-event="getCheckLength">获取选中数目</button>
-            <button class="layui-btn layui-btn-sm" lay-event="isAll">验证是否全选</button>
+        <div class="layui-form-item">
+            <div class="layui-input-inline">
+                <select name="quiz1" style="height: 20px">
+                    <option value="" selected disabled>专业</option>
+                    <option value="计算机科学与技术">计算机科学与技术</option>
+                    <option value="会计">会计</option>
+                </select>
+            </div>
+            <div class="layui-input-inline">
+                <select name="quiz2" style="height: 20px">
+                    <option value="" selected disabled>学期</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                </select>
+            </div>
+            <div class="layui-input-inline">
+                <input class="layui-input" name="stuid" id="demoReload" placeholder="学号" autocomplete="off">
+            </div>
+            <button class="layui-btn" data-type="reload" id="search">搜索</button>
         </div>
     </script>
-    <script type="text/html" id="barDemo">
-        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
-    </script>
-<!--    <script type="text/javascript">
-        layui.use('table', function() {
+    <table id="test" class="layui-hide" lay-filter="test"></table>
+    <script th:inline="javascript">
+        layui.use(['table', 'jquery'], function () {
             var table = layui.table;
-
-            layui.jquery.getJSON('header.json', function(header){
-                table.render({
-                    id: 'idTest',
-                    elem: '#test',
-                    height: 315,
-                    url: '../../demo.json', //数据接口
-                    page: true,
-                    cols: header
-                });
-            })
-        });
-    </script>-->
-    <!--<script>
-        layui.use('table', function () {
-            var table = layui.table;
-            //第一个实例
+            var localTest = layui.sessionData('test1');
+            var localHeaders = localTest.tableHeaders;
+            var tableHeaders = [];
+            //表格渲染
             table.render({
                 elem: '#test'
-                , height: 600
-                , url: '/course' //数据接口
+                , height: 625
+                //, skin: 'line' //行边框风格
+                , even: true //开启隔行背景
+                , size: 'sm' //小尺寸的表格
+                , url: '/s' //数据接口
                 , page: true //开启分页
-                , toolbar: '#toolbarDemo'
-                , title: '用户数据表'
-                , totalRow: true
-                , cols: [
-                    [ /*//表头
-                        {type: 'checkbox', fixed: 'left'}
-                        , {field: 'id', title: 'ID', width: 80, sort: true, fixed: 'left',unresize: true,totalRowText: '合计'}
-                        , {field: 'username', title: '用户名', width: 80}
-                        , {field: 'sex', title: '性别', width: 80, sort: true}
-                        , {field: 'city', title: '城市', width: 80}
-                        , {field: 'sign', title: '签名', width: 177}
-                        , {field: 'experience', title: '积分', width: 80, sort: true,totalRow: true}
-                        , {field: 'score', title: '评分', width: 80, sort: true}
-                        , {field: 'classify', title: '职业', width: 80}
-                        , {field: 'wealth', title: '财富', width: 135, sort: true}
-                        , {fixed: 'right', title: '操作', toolbar: '#barDemo', width: 150}*/
-                    ]]
-                , done: function(res, curr, count){
-                    //如果是异步请求数据方式，res即为你接口返回的信息。
-                    //如果是直接赋值的方式，res即为：{data: [], count: 99} data为当前页数据、count为数据总长度
-                    var strs= new Array();
-                    var tit=res.nem;
-                    strs=tit.split(",");
-                    for (var i=0;i<strs.length;i++)
-                    {
-                        console.log(strs[i]);
+                , toolbar: '#toolbarDemo'//顶部工具栏
+                //, totalRow: true //合计
+                //, loading: true
+                , limit: 15 //每页限制
+                // , method: 'post'
+                , response: {
+                    statusName: 'code' //规定数据状态的字段名称，默认：code
+                    , statusCode: 0 //规定成功的状态码，默认：0
+                    , countName: 'count' //规定数据总数的字段名称，默认：count
+                    , dataName: 'data' //规定数据列表的字段名称，默认：data
+                }
+                , parseData: function (res) { //res 即为原始返回的数据
+                    //写入课程名
+                    var courses = res.data.courses;
+                    for (var i = 2; i < courses.length + 2; i++) {
+                        tableHeaders[i] = {
+                            field: 'course' + (i - 1),
+                            title: courses[i - 2],
+                            align: 'center',
+                            width: '120',
+                            sort: true,
+                            totalRow: true
+                        };
                     }
-
-
-                    //得到当前页码
-                    console.log(curr);
-
-                    //得到数据总量
-                    console.log(count);
+                    tableHeaders[0] = {type: 'checkbox', fixed: 'left'};
+                    tableHeaders[1] = {
+                        field: 'stuid', title: '学号',totalRowText: '合计',
+                        align: 'center', width: '120', sort: true
+                    };
+                    /*table.init('test', {
+                       cols: [tableHeaders]
+                       //, data: res.data.stuList
+                       //, limit: 10
+                   });*/
+                    layui.sessionData('test1', {
+                        key: 'tableHeaders'
+                        , value: tableHeaders
+                    });
+                    return {
+                        "code": res.code, //解析接口状态
+                        "msg": res.msg, //解析提示文本
+                        "count": res.count, //解析数据长度
+                        "data": res.data.stuList //解析数据列表
+                    };
+                }
+                , cols: [
+                    localHeaders
+                ]
+                , done: function (res, curr, count) {
+                    /*                 console.log(tableHeaders);
+                                     table.init('test', {
+                                         cols: [tableHeaders]
+                                         /!*, data: datas
+                                         , limit: 10*!/
+                                     });*/
                 }
             });
-            //工具栏事件
+
+            //监听事件
             table.on('toolbar(test)', function (obj) {
                 var checkStatus = table.checkStatus(obj.config.id);
                 switch (obj.event) {
-                    case 'getCheckData':
-                        var data = checkStatus.data;
-                        layer.alert(JSON.stringify(data));
+                    case 'add':
+                        layer.msg('添加');
                         break;
-                    case 'getCheckLength':
-                        var data = checkStatus.data;
-                        layer.msg('选中了：' + data.length + ' 个');
+                    case 'delete':
+                        layer.msg('删除');
                         break;
-                    case 'isAll':
-                        layer.msg(checkStatus.isAll ? '全选' : '未全选')
+                    case 'update':
+                        layer.msg('编辑');
                         break;
                 }
-                ;
             });
 
+            //表格重载
+            var $ = layui.$, active = {
+                reload: function(){
+                    var demoReload = $('#demoReload');
+
+                    //执行重载
+                    table.reload('testReload', {
+                        page: {
+                            curr: 1 //重新从第 1 页开始
+                        }
+                        ,where: {
+                            key: {
+                                id: demoReload.val()
+                            }
+                        }
+                    });
+                }
+            };
+
+            $('#search').on('click', function(){
+                var type = $(this).data('type');
+                active[type] ? active[type].call(this) : '';
+            });
         });
     </script>
--->
-<script>
-    layui.use('table', function () {
-        var table = layui.table;
-        table.render({
-            elem: '#test'
-            , url: '/course'
-            , cols: [
-                []]
-            //回调函数 res返回的data curr当前页码 count数据总量
-            , done: function (res, curr, count) {
-                var mycars = new Array();
-                console.log(res);
-
-                var tit = res.v;
-               // alert(tit);
-                var obj2 = eval(res);
-                console.log(res.data[0].cId);
-                //alert(obj2.data[0].cterm);
-                var strs = new Array();
-                //strs = tit.split(",");
-                for(var i = 0; i < res.data; i++){
-                    console.log(res.data[i].cid);
-                }
-                /*for (var i = 0; i < strs.length; i++) {
-                    mycars[i] = {field: 'ex' + i, title: strs[i], align: 'center', width: '120'};
-                }*/
-                table.init('test', {
-                    cols: [mycars]
-                    , data: res.data
-                    , limit: 1000
-                });
-            }
-        })
-    });
-</script>
 </div>
 
 <script>
