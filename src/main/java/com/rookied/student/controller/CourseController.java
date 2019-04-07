@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.rookied.student.bean.Course;
 import com.rookied.student.service.CourseService;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -27,11 +28,13 @@ public class CourseController {
      * 默认获取计科 第一学期
      * @return
      */
-    @PostMapping(value = "/course")
-    public String course(@RequestParam(value ="cmaj",required = false,defaultValue = "计科")String cMaj,
-                         @RequestParam(value ="cterm",required = false,defaultValue = "1")int cterm){
+    @GetMapping(value = "/course")
+    public String course(@RequestParam(value ="cmaj",required = false,defaultValue = "计算机科学与技术")String cMaj,
+                               @RequestParam(value ="cterm",required = false,defaultValue = "1")int cterm, Model model){
         Map<String,String> map;
-        List<String> courses = courseService.findCourseByRedis(cMaj, cterm);
+        System.out.println(cMaj+"----"+cterm);
+        List<String> courses = courseService.findCourseByRedis("计算机科学与技术".equals(cMaj)?"计科":"会计", cterm);
+        System.out.println(courses);
         List<Map<String,String>> list = new ArrayList<>();
         String key = "coure";
         int index = 0;
@@ -45,9 +48,12 @@ public class CourseController {
        // map.put(cMaj+cterm,courses);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("code", 0);
-        jsonObject.put("msg", "");
-        jsonObject.put("count", list.size());
-        jsonObject.put("data", list);
+        jsonObject.put("cmaj", cMaj);
+        jsonObject.put("cterm", cterm);
+        jsonObject.put("data", courses);
+        model.addAttribute("mm","hello");
         return jsonObject.toJSONString();
+
+        //return courses;
     }
 }

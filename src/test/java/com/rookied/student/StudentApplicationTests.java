@@ -123,7 +123,6 @@ public class StudentApplicationTests {
      * @throws IOException
      */
     @Test
-    //@Transactional
     @SuppressWarnings("all")
     public void courseInsert() throws IOException {
         Map<String,Object> map = IOUtils.getAllCoursesAndScore();

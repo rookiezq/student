@@ -78,7 +78,6 @@ public class IOUtils {
 
     /**
      * 读取毕业信息xlsx文件
-     *
      * @throws IOException
      */
     @Test
@@ -144,7 +143,6 @@ public class IOUtils {
 
     /**
      * 从表格获取所有课程和成绩
-     *
      * @throws IOException
      */
     @SuppressWarnings("all")

@@ -1,11 +1,9 @@
 package com.rookied.student.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.rookied.student.bean.Student;
 import com.rookied.student.service.CourseService;
 import com.rookied.student.service.StudentService;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -32,7 +30,8 @@ public class StudentController {
                         @RequestParam("limit") Integer limit,
                         @RequestParam(value = "stuid", required = false, defaultValue = "") String stuid,
                         @RequestParam(value = "cmaj", required = false, defaultValue = "计算机科学与技术") String cMaj,
-                        @RequestParam(value = "cterm", required = false, defaultValue = "6") int cterm) {
+                        @RequestParam(value = "cterm", required = false, defaultValue = "1") int cterm) {
+        System.out.println("page:"+page+"limit:"+limit+"stuid:"+stuid+"cmaj:"+cMaj+"cterm"+cterm);
         List<Map<String, String>> list = studentService.findAllScore(page,limit,stuid, cterm, cMaj);
         //分页
         List<Map<String, String>> pageList = new ArrayList<>();
