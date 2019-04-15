@@ -10,6 +10,7 @@ import com.rookied.student.mapper.ScoreMapper;
 import com.rookied.student.mapper.StudentMapper;
 import com.rookied.student.service.StudentService;
 import com.rookied.student.util.IOUtils;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,6 +26,7 @@ import java.util.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@SuppressWarnings("all")
 public class StudentApplicationTests {
     @Resource
     private StudentMapper studentMapper;
@@ -69,7 +71,6 @@ public class StudentApplicationTests {
     }
 
     @Test
-    @SuppressWarnings("all")
     public void stu() {
         //查询某个学生所有学期的课程 0代表所有学期
         List<Student> list = studentMapper.findAllScore("", 1, "计算机科学与技术");
@@ -118,25 +119,60 @@ public class StudentApplicationTests {
 
     }
 
+    @Before
+    public void init(){
+
+    }
+
     /**
      * 插入所有课程
      * @throws IOException
      */
     @Test
-    @SuppressWarnings("all")
     public void courseInsert() throws IOException {
         Map<String,Object> map = IOUtils.getAllCoursesAndScore();
         List<Course> list = (List<Course>) map.get("courseList");
+        Map<String,List<String>> map1 = new HashMap<>();
+        List<String> courseList = new ArrayList<>();
+        int term = 1;
         for (Course course : list) {
+            //插入数据库
             courseMapper.create(course);
+            //当学期变化时 把courseList放入map1
+            if ("计算机科学与技术".equalsIgnoreCase(course.getCmaj())) {
+                if (course.getCterm() != term) {
+                    map1.put("计科" + term, courseList);
+                    // 重新new 不能用 courseList.clear() map1放入的是map2的引用
+                    courseList = new ArrayList<>();
+                    term++;
+                }
+                courseList.add(course.getCname());
+            }
         }
+        //!!!!!!!这句没加找了好久的错误
+        if (term == 6) map1.put("计科" + term, courseList);
+        courseList = new ArrayList<>();
+        term = 1;
+        for (Course course : list) {
+            if ("会计".equalsIgnoreCase(course.getCmaj())) {
+                if (course.getCterm() != term) {
+                    map1.put("会计" + term, courseList);
+                    // 重新new 不能用 courseList.clear() map1放入的是map2的引用
+                    courseList = new ArrayList<>();
+                    term++;
+                }
+                //将每学期的课程名加入list
+                courseList.add(course.getCname());
+            }
+            if (term == 6) map1.put("会计" + term, courseList);
+        }
+        redisTemplate.opsForHash().putAll("courseMap", map1);
     }
 
     /**
      * 插入所有成绩
      * @throws IOException
      */
-    @SuppressWarnings("all")
     @Test
     public void scoreInsert() throws IOException {
         Map<String,Object> map = IOUtils.getAllCoursesAndScore();
@@ -155,7 +191,6 @@ public class StudentApplicationTests {
     }
 
     @Test
-    @SuppressWarnings("all")
     public void findCourseByTerm() {
         List<Course> list = courseMapper.findCourseAndScore();
         //两个专业12个学期的课的成绩
@@ -225,7 +260,7 @@ public class StudentApplicationTests {
             }
             map3.put(entry.getKey(),courseList);
         }
-        redisTemplate.opsForHash().putAll("courseMap", map3);
+       // redisTemplate.opsForHash().putAll("courseMap", map3);
     }
 
     @Test
@@ -251,7 +286,6 @@ public class StudentApplicationTests {
     }
 
     @Test
-    @SuppressWarnings("all")
     public void show() {
         Cursor<Map.Entry<Object, Object>> curosr = redisTemplate.opsForHash().scan("scoreMap", ScanOptions.NONE);
         Map<String, Map<String, List<String>>> map = new HashMap<>();

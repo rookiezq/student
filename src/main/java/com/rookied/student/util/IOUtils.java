@@ -68,12 +68,14 @@ public class IOUtils {
                 //成绩是从第四行第三个单元格开始
                 if (i > sheet.getFirstRowNum() + 2 && j > row.getFirstCellNum() + 1) {
                     int cid = cidList.get(j-2);
+                    //System.out.println(cid);
                     //封装Score
                     Score score = new Score(cid,sid,cell);
                     scoreList.add(score);
                 }
             }
         }
+
     }
 
     /**

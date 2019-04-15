@@ -1,9 +1,7 @@
 package com.rookied.student.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.rookied.student.bean.Course;
 import com.rookied.student.service.CourseService;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,13 +30,13 @@ public class CourseController {
     public String course(@RequestParam(value ="cmaj",required = false,defaultValue = "计算机科学与技术")String cMaj,
                                @RequestParam(value ="cterm",required = false,defaultValue = "1")int cterm, Model model){
         Map<String,String> map;
-        System.out.println(cMaj+"----"+cterm);
+        //System.out.println(cMaj+"----"+cterm);
         List<String> courses = courseService.findCourseByRedis("计算机科学与技术".equals(cMaj)?"计科":"会计", cterm);
-        System.out.println(courses);
+        //System.out.println(courses);
         List<Map<String,String>> list = new ArrayList<>();
         String key = "coure";
         int index = 0;
-        for (String cours : courses) {
+        for (String course : courses) {
             map = new HashMap<>();
             map.put(key+index,courses.get(index));
             list.add(map);

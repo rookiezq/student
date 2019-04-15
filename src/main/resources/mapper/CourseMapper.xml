@@ -40,7 +40,7 @@
 
     <!-- 创建 -->
     <insert id="create" parameterType="com.rookied.student.bean.Course">
-        INSERT INTO course(cid, cname, cterm, cmaj) VALUES (#{cId}, #{cName}, #{cTerm}, #{cMaj})
+        INSERT INTO course(cid, cname, cterm, cmaj) VALUES (#{cid}, #{cname}, #{cterm}, #{cmaj})
     </insert>
 
     <!-- 删除 -->

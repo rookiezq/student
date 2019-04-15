@@ -31,7 +31,7 @@ public class StudentController {
                         @RequestParam(value = "stuid", required = false, defaultValue = "") String stuid,
                         @RequestParam(value = "cmaj", required = false, defaultValue = "计算机科学与技术") String cMaj,
                         @RequestParam(value = "cterm", required = false, defaultValue = "1") int cterm) {
-        System.out.println("page:"+page+"limit:"+limit+"stuid:"+stuid+"cmaj:"+cMaj+"cterm"+cterm);
+        //System.out.println("page:"+page+"limit:"+limit+"stuid:"+stuid+"cmaj:"+cMaj+"cterm"+cterm);
         List<Map<String, String>> list = studentService.findAllScore(page,limit,stuid, cterm, cMaj);
         //分页
         List<Map<String, String>> pageList = new ArrayList<>();

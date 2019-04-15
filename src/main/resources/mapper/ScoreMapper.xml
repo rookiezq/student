@@ -25,7 +25,7 @@
 
     <!-- 创建 -->
     <insert id="create" parameterType="com.rookied.student.bean.Score">
-        INSERT INTO score(cid, stu_id, score) VALUES (#{cId}, #{stuId}, #{score})
+        INSERT INTO score(cid, stu_id, score) VALUES (#{cid}, #{stuId}, #{score})
     </insert>
 
     <!-- 删除 -->
