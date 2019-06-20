@@ -28,7 +28,7 @@ public class CourseController {
      */
     @GetMapping(value = "/course")
     public String course(@RequestParam(value ="cmaj",required = false,defaultValue = "计算机科学与技术")String cMaj,
-                               @RequestParam(value ="cterm",required = false,defaultValue = "1")int cterm, Model model){
+                               @RequestParam(value ="cterm",required = false,defaultValue = "1")String cterm, Model model){
         Map<String,String> map;
         //System.out.println(cMaj+"----"+cterm);
         List<String> courses = courseService.findCourseByRedis("计算机科学与技术".equals(cMaj)?"计科":"会计", cterm);

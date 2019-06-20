@@ -90,7 +90,7 @@ public class CourseServiceImpl implements CourseService {
      */
     @Override
     @SuppressWarnings("all")
-    public List<String> findCourseByRedis(String cmaj, int cterm) {
+    public List<String> findCourseByRedis(String cmaj, String cterm) {
         //redisTemplate.opsForHash().putAll("scoreMap",map);
         //Map<Object, Object> scoreMap = redisTemplate.opsForHash().entries("scoreMap");
         //redisTemplate.opsForValue().multiSet(map);

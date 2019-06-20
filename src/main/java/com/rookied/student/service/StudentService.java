@@ -15,12 +15,10 @@ public interface StudentService extends BaseService<Student> {
     /**
      * 通过学号查找所有成绩
      *
-     * @param page  当前页码
-     * @param limit  每页个数
      * @param stuId  学号
      * @param cterm  学期
      * @param stuMaj 专业
      * @return 成绩列表
      */
-    List<Map<String, String>> findAllScore(Integer page,Integer limit,String stuId, int cterm, String stuMaj);
+    List<Map<String, String>> findAllScore(String stuId, String cterm, String stuMaj);
 }

@@ -24,7 +24,7 @@ public interface CourseService extends BaseService<Course> {
      * @param cterm 学期
      * @return 课程表
      */
-    List<String> findCourseByRedis(String cmaj, int cterm);
+    List<String> findCourseByRedis(String cmaj, String cterm);
 
     /**
      * 查找课程对应成绩

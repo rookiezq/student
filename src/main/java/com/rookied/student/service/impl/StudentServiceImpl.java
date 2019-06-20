@@ -5,8 +5,11 @@ import com.github.pagehelper.PageInfo;
 import com.rookied.student.bean.Score;
 import com.rookied.student.bean.Student;
 import com.rookied.student.mapper.StudentMapper;
+import com.rookied.student.service.ScoreService;
 import com.rookied.student.service.StudentService;
+import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -27,6 +30,8 @@ public class StudentServiceImpl implements StudentService {
 
     @Resource
     private StudentMapper studentMapper;
+    @Resource
+    private ScoreService scoreService;
 
     @Resource
     private RedisTemplate redisTemplate;
@@ -38,22 +43,22 @@ public class StudentServiceImpl implements StudentService {
      * @param stuMaj 专业
      * @return 成绩列表
      */
-    @Override
+/*    @Override
     @SuppressWarnings("all")
-    public List<Map<String, String>> findAllScore(Integer page, Integer limit, String stuId, int cterm, String stuMaj) {
+    public List<Map<String, String>> findAllScore(String stuId, int cterm, String stuMaj) {
         //如果学号为空
         boolean flag1 = "".equals(stuId) || stuId == null;
         boolean flag2 = "".equals(stuMaj) || stuMaj == null;
         //按专业查询 分别赋给一个默认学号
-        /*if (flag1 && MAJOR_CS.equalsIgnoreCase(stuMaj)){
+        *//*if (flag1 && MAJOR_CS.equalsIgnoreCase(stuMaj)){
             stuId = "20141308001";
         }
         if (flag1 && MAJOR_AC.equalsIgnoreCase(stuMaj)){
             stuId = "20141312001";
-        }*/
-        /*if (flag1 && flag2){
+        }*//*
+     *//*if (flag1 && flag2){
             stuMaj = MAJOR_CS;
-        }*/
+        }*//*
         //查询某个学生所有学期的课程 0代表所有学期
         List<Student> list = studentMapper.findAllScore(stuId, cterm, stuMaj);
         //封装返回的页面展示 {{stuid:'2051337025'},{course1:70},{course2:85}....,'}
@@ -76,7 +81,44 @@ public class StudentServiceImpl implements StudentService {
         }
 
         return stuLists;
+    }*/
+    @Override
+    @SuppressWarnings("all")
+    public List<Map<String, String>> findAllScore(String stuId, String cterm, String stuMaj) {
+        List<Student> students = studentMapper.findAllScore(stuId, "主要课程".equals(cterm)?0:Integer.valueOf(cterm), stuMaj);
+        Cursor<Map.Entry<Object, Object>> curosr = redisTemplate.opsForHash().scan("scoreMap", ScanOptions.NONE);
+        Map<String, Map<String, List<String>>> map = new HashMap<>();
+        while (curosr.hasNext()) {
+            Map.Entry<Object, Object> entry = curosr.next();
+            map.put((String) entry.getKey(), (Map<String, List<String>>) entry.getValue());
+        }
+
+        //封装返回的页面展示 {{stuid:'2051337025'},{course1:70},{course2:85}....,'}
+        List<Map<String, String>> stuLists = new ArrayList<>();
+        //Map
+        //K:V 课程名:成绩
+        Map<String, String> scoreMap;
+        //课程名
+        //StringBuffer courseName = new StringBuffer();
+        int num = 0;
+        for (Student student : students) {
+            scoreMap = new HashMap<>();
+            scoreMap.put("stuid", student.getStuId());
+            //课程数
+            int index = 0;
+            //学生数
+
+            for (List<String> s : map.get(("计算机科学与技术".equals(stuMaj)?"计科":"会计") + cterm).values()) {
+                index++;
+                scoreMap.put("course" + index, s.get(num));
+            }
+            num++;
+
+            stuLists.add(scoreMap);
+        }
+        return stuLists;
     }
+
 
     /**
      * 查询所有

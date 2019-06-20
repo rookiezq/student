@@ -43,9 +43,12 @@ public class StudentApplicationTests {
 
     @Resource
     private StringRedisTemplate stringRedisTemplate;
-
+    //主要课程cid
+    //计科
+    Integer[] major1 = {1, 4, 9, 13, 19, 27, 39, 40, 68, 69, 77, 92, 94, 98, 102, 105};
+    //会计
+    Integer[] major2 = {125, 128, 130, 142, 151, 156, 157, 166, 186, 194, 199, 200, 218, 223, 237, 242};
     @Test
-    @SuppressWarnings("all")
     public void stuList() {
         int term = 0;
         //查询某个学生所有学期的课程 0代表所有学期
@@ -125,7 +128,15 @@ public class StudentApplicationTests {
     }
 
     /**
-     * 插入所有课程
+     * 插入主要课程
+     */
+    public void mainCourseInsert() {
+
+    }
+
+    /**
+     * Step 1
+     * 插入所有课程，并放入redis
      * @throws IOException
      */
     @Test
@@ -134,6 +145,13 @@ public class StudentApplicationTests {
         List<Course> list = (List<Course>) map.get("courseList");
         Map<String,List<String>> map1 = new HashMap<>();
         List<String> courseList = new ArrayList<>();
+        //主要课程
+        List<String> mainCourse = new ArrayList<>();
+        //将两个专业主要课程id数组转为list
+        List<Integer> cidList1 = new ArrayList<Integer>(major1.length);
+        List<Integer> cidList2 = new ArrayList<Integer>(major2.length);
+        Collections.addAll(cidList1, major1);
+        Collections.addAll(cidList2, major2);
         int term = 1;
         for (Course course : list) {
             //插入数据库
@@ -147,11 +165,19 @@ public class StudentApplicationTests {
                     term++;
                 }
                 courseList.add(course.getCname());
+
+                //如果存放cid的list中包含该课程id，将课程名放入mainCourse
+                if (cidList1.contains(course.getCid())) {
+                    mainCourse.add(course.getCname());
+                }
             }
         }
         //!!!!!!!这句没加找了好久的错误
         if (term == 6) map1.put("计科" + term, courseList);
         courseList = new ArrayList<>();
+        //主要课程放入map1
+        map1.put("计科主要课程", mainCourse);
+        mainCourse = new ArrayList<>();
         term = 1;
         for (Course course : list) {
             if ("会计".equalsIgnoreCase(course.getCmaj())) {
@@ -163,13 +189,21 @@ public class StudentApplicationTests {
                 }
                 //将每学期的课程名加入list
                 courseList.add(course.getCname());
+
+                //如果存放cid的list中包含该课程id，将课程名放入mainCourse
+                if (cidList2.contains(course.getCid())) {
+                    mainCourse.add(course.getCname());
+                }
             }
-            if (term == 6) map1.put("会计" + term, courseList);
         }
+        if (term == 6) map1.put("会计" + term, courseList);
+        //主要课程放入map1
+        map1.put("会计主要课程", mainCourse);
         redisTemplate.opsForHash().putAll("courseMap", map1);
     }
 
     /**
+     * Step 2
      * 插入所有成绩
      * @throws IOException
      */
@@ -190,15 +224,26 @@ public class StudentApplicationTests {
         }
     }
 
+    /**
+     * Step 3
+     * 将课程和对应成绩从数据库中查出放入redis
+     */
     @Test
     public void findCourseByTerm() {
         List<Course> list = courseMapper.findCourseAndScore();
         //两个专业12个学期的课的成绩
-        Map<String, Map<String, List<String>>> map1 = new HashMap<>(12);
+        Map<String, Map<String, List<String>>> map1 = new LinkedHashMap<>();
         //存放259门科目
-        Map<String, List<String>> map2 = new HashMap<>();
+        Map<String, List<String>> map2 = new LinkedHashMap<>();
+        //存放主要课程
+        Map<String, List<String>> map4 = new LinkedHashMap<>();
         //存放每门科目对应的成绩
         List<String> scoreList;
+        //将两个专业主要课程id数组转为list
+        List<Integer> cidList1 = new ArrayList<Integer>(major1.length);
+        List<Integer> cidList2 = new ArrayList<Integer>(major2.length);
+        Collections.addAll(cidList1, major1);
+        Collections.addAll(cidList2, major2);
         int term = 1;
         for (Course course : list) {
             //当学期变化时 把map2放入map1
@@ -206,7 +251,7 @@ public class StudentApplicationTests {
                 if (course.getCterm() != term) {
                     map1.put("计科" + term, map2);
                     // 重新new 不能用 courseList.clear() map1放入的是map2的引用
-                    map2 = new HashMap<>();
+                    map2 = new LinkedHashMap<>();
                     term++;
                 }
                 //将每学期的课程名加入list
@@ -216,18 +261,24 @@ public class StudentApplicationTests {
                     scoreList.add(score.getScore());
                 }
                 map2.put(course.getCname(), scoreList);
+                //如果存放cid的list中包含该课程id，将课程名和对应成绩放入map4
+                if (cidList1.contains(course.getCid())) {
+                    map4.put(course.getCname(), scoreList);
+                }
             }
         }
         //!!!!!!!这句没加找了好久的错误
         if (term == 6) map1.put("计科" + term, map2);
-        map2 = new HashMap<>();
+        map2 = new LinkedHashMap<>();
+        map1.put("计科主要课程", map4);
+        map4 = new LinkedHashMap<>();
         term = 1;
         for (Course course : list) {
             if ("会计".equalsIgnoreCase(course.getCmaj())) {
                 if (course.getCterm() != term) {
                     map1.put("会计" + term, map2);
                     // 重新new 不能用 courseList.clear() map1放入的是map2的引用
-                    map2 = new HashMap<>();
+                    map2 = new LinkedHashMap<>();
                     term++;
                 }
                 //将每学期的课程名加入list
@@ -237,15 +288,16 @@ public class StudentApplicationTests {
                     scoreList.add(score.getScore());
                 }
                 map2.put(course.getCname(), scoreList);
-            }
-            if (term == 6) map1.put("会计" + term, map2);
-        }
-        //System.out.println(map1.get("计科6"));
-        redisTemplate.opsForHash().putAll("scoreMap", map1);
-        //Map<Object, Object> scoreMap = redisTemplate.opsForHash().entries("scoreMap");
 
-        //redisTemplate.opsForValue().multiSet(map1);
-        //System.out.println(redisTemplate.opsForValue().get("计科1"));
+                //如果存放cid的list中包含该课程id，将课程名和对应成绩放入map4
+                if (cidList2.contains(course.getCid())) {
+                    map4.put(course.getCname(), scoreList);
+                }
+            }
+        }
+        if (term == 6) map1.put("会计" + term, map2);
+        map1.put("会计主要课程", map4);
+        redisTemplate.opsForHash().putAll("scoreMap", map1);
 
         //存放各个专业每个学期的课程
         List<String> courseList ;
@@ -260,7 +312,7 @@ public class StudentApplicationTests {
             }
             map3.put(entry.getKey(),courseList);
         }
-       // redisTemplate.opsForHash().putAll("courseMap", map3);
+        // redisTemplate.opsForHash().putAll("courseMap", map3);
     }
 
     @Test
@@ -287,13 +339,40 @@ public class StudentApplicationTests {
 
     @Test
     public void show() {
+        String cmaj = "计算机科学与技术";
+        String cterm = "1";
+        String key = "计科";
+        List<Student> students = studentMapper.findAllScore("", 1, cmaj);
         Cursor<Map.Entry<Object, Object>> curosr = redisTemplate.opsForHash().scan("scoreMap", ScanOptions.NONE);
         Map<String, Map<String, List<String>>> map = new HashMap<>();
         while (curosr.hasNext()) {
             Map.Entry<Object, Object> entry = curosr.next();
             map.put((String) entry.getKey(), (Map<String, List<String>>) entry.getValue());
         }
-        System.out.println(map.get("计科1"));
+
+        //封装返回的页面展示 {{stuid:'2051337025'},{course1:70},{course2:85}....,'}
+        List<Map<String, String>> stuLists = new ArrayList<>();
+        //Map
+        //K:V 课程名:成绩
+        Map<String, String> scoreMap;
+        //课程名
+        //StringBuffer courseName = new StringBuffer();
+        int num = 0;
+        for (Student student : students) {
+            scoreMap = new HashMap<>();
+            scoreMap.put("stuid", student.getStuId());
+            //课程数
+            int index = 0;
+            //学生数
+            for (List<String> s : map.get(key + cterm).values()) {
+                index++;
+                scoreMap.put("course" + index, s.get(num));
+            }
+            num++;
+
+            stuLists.add(scoreMap);
+        }
+        System.out.println(stuLists);
     }
 }
 
